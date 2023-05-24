@@ -16,10 +16,10 @@ public class TransactionHistory {
     private Integer id;
 
     @Column(name = "from_account_id")
-    private Integer fromAcoountId;
+    private Integer fromAccountId;
 
     @Column(name = "to_account_id")
-    private Integer toAcoountId;
+    private Integer toAccountId;
 
     private LocalDateTime when;
     private Integer money; // 이동한 금액

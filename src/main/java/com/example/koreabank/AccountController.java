@@ -15,12 +15,12 @@ public class AccountController {
     private AccountRepository accountRepository;
 
     @ResponseStatus(code = HttpStatus.CREATED)
-    @PutMapping("/")
+    @PutMapping("/") // 생성
     public void createAccount(@RequestBody AccountRecord record) {
         accountRepository.save(record.toAccount());
     }
 
-    @GetMapping("/")
+    @GetMapping("/") 
     public List<Account> getAllAccounts(
         @RequestParam(name = "uid") String uid
     ) {
