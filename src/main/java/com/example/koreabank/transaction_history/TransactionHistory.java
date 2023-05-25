@@ -1,4 +1,4 @@
-package com.example.koreabank;
+package com.example.koreabank.transaction_history;
 
 import java.time.LocalDateTime;
 
@@ -21,6 +21,8 @@ public class TransactionHistory {
     @Column(name = "to_account_id")
     private Integer toAccountId;
 
-    private LocalDateTime when;
+    private Integer when;
+
+    @Column(name = "money_")
     private Integer money; // 이동한 금액
 }

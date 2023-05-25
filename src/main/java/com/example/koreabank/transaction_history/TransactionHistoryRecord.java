@@ -1,8 +1,8 @@
-package com.example.koreabank;
+package com.example.koreabank.transaction_history;
 
 import java.time.LocalDateTime;
 
-public record TransactionHistoryRecord(Integer fromAccountId, Integer toAccountId, LocalDateTime when, Integer money) {
+public record TransactionHistoryRecord(Integer fromAccountId, Integer toAccountId, Integer when, Integer money, Integer accountPassword) {
 
     public TransactionHistory toTransactionHistory() {
         var hs = new TransactionHistory();

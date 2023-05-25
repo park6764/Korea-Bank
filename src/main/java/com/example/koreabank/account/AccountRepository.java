@@ -1,4 +1,4 @@
-package com.example.koreabank;
+package com.example.koreabank.account;
 
 import org.springframework.data.repository.CrudRepository;
 

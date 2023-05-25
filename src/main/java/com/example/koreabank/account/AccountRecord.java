@@ -1,4 +1,4 @@
-package com.example.koreabank;
+package com.example.koreabank.account;
 
 public record AccountRecord(String uid, Integer password, Integer money) {
     

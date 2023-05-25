@@ -1,4 +1,4 @@
-package com.example.koreabank;
+package com.example.koreabank.account;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,6 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @RequiredArgsConstructor
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,5 +17,6 @@ public class Account {
 
     private Integer password;
 
+    @Column(name = "money_")
     private Integer money;
 }
