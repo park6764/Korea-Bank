@@ -4,17 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.http.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.koreabank.account.Account;
@@ -23,9 +16,8 @@ import com.example.koreabank.account.AccountRepository;
 @Controller
 @RequestMapping("/account/installment-saving")
 public class InstallmentSavingAccountController {
-    @Autowired
-    private InstallmentSavingRepository installmentSavingRepository;
-    private AccountRepository accountRepository;
+    @Autowired private InstallmentSavingRepository installmentSavingRepository;
+    @Autowired private AccountRepository accountRepository;
 
     @PutMapping
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -46,7 +38,7 @@ public class InstallmentSavingAccountController {
         } 
     }
 
-    @GetMapping("/") 
+    @GetMapping
     public List<InstallmentSavingAccount> getAllISA(
         @RequestParam(name = "uid") String uid
     ) {
@@ -59,15 +51,37 @@ public class InstallmentSavingAccountController {
         return list;
     }
 
-    @PostMapping
-    public void editInstallmentSavingAccountInfo(
-        @RequestParam Integer accountId,
-        @RequestParam Integer fromAccountId
+    @ResponseStatus(code = HttpStatus.OK)
+    @GetMapping("/tryDeposit")
+    public void tryDeposit(
+        @RequestParam Integer id
     ) {
+        InstallmentSavingAccount isa = installmentSavingRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "일치하는 적금 계좌가 존재하지 않습니다."));
+
         
+        Account account = accountRepository.findById(isa.getFromAccountId())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "일치하는 출금 계좌가 존재하지 않습니다."));
+
+        if(account.getMoney() < isa.getMoneyToPut()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "출금 계좌의 잔액이 부족합니다.");
+        
+        if(isa.getPenalties() == 0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "만료된 적금 계좌입니다.");
+
+        // Integer fullCount = (int) ((isa.getDueDate() - isa.getCreatedDate()) / isa.getInterval());
+        // Integer current = fullCount - isa.getRemainingCount();
+        Long currentDue = isa.getDueDate() - (isa.getInterval() * isa.getRemainingCount()); // 현재 만료 날짜
+        if(System.currentTimeMillis() > currentDue) {
+            isa.setPenalties(isa.getPenalties() - 1);
+        }
+
+        isa.setMoney(isa.getMoney() + isa.getMoneyToPut());
+        account.setMoney(account.getMoney() - isa.getMoneyToPut());
+
+        installmentSavingRepository.save(isa); // 객체 수정 후 save 호출 시 SQL UPDATE 문 실행과 같다.
+        accountRepository.save(account);
     }
 
-    @PostMapping("/")
+    @PostMapping
     public void editInstallmentSavingAccountInfo(
         @RequestParam String uid,
         @RequestParam Integer accountId,
@@ -79,14 +93,23 @@ public class InstallmentSavingAccountController {
         if(ISA.isPresent()) {
             var newISA = ISA.get();
 
+            if(newPw.isEmpty() && fromAccountId.isEmpty()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정할 정보를 입력해 주세요.");
+
             if(newPw.isPresent()) {
                 newISA.setPassword(newPw.get());
-            } 
-            
+            }
+
             if(fromAccountId.isPresent()) {
                 newISA.setFromAccountId(fromAccountId.get());
             }
             accountRepository.save(newISA);
-        }
+        } else throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "일치하는 계좌가 존재하지 않습니다.");
+    }
+
+    @DeleteMapping
+    public void deleteAccount(
+        @RequestParam(name = "id") Integer id
+    ) {
+        installmentSavingRepository.deleteById(id);
     }
 }

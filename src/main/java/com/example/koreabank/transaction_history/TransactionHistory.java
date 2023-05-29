@@ -21,7 +21,8 @@ public class TransactionHistory {
     @Column(name = "to_account_id")
     private Integer toAccountId;
 
-    private Integer when;
+    @Column(name = "commit_time")
+    private Long commitTime; //시간은 epoch time (밀리초)
 
     @Column(name = "money_")
     private Integer money; // 이동한 금액
