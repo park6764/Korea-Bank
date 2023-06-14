@@ -7,7 +7,6 @@ import lombok.*;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

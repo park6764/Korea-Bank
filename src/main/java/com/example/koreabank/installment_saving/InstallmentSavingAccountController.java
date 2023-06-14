@@ -102,7 +102,7 @@ public class InstallmentSavingAccountController {
             if(fromAccountId.isPresent()) {
                 newISA.setFromAccountId(fromAccountId.get());
             }
-            accountRepository.save(newISA);
+            installmentSavingRepository.save(newISA);
         } else throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "일치하는 계좌가 존재하지 않습니다.");
     }
 
