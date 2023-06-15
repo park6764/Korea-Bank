@@ -6,20 +6,18 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.koreabank.account.Account;
 import com.example.koreabank.account.AccountRepository;
 
-@Controller
-@RequestMapping("/account/installment-saving")
+@RestController
 public class InstallmentSavingAccountController {
     @Autowired private InstallmentSavingRepository installmentSavingRepository;
     @Autowired private AccountRepository accountRepository;
 
-    @PutMapping
+    @PutMapping("/account/installment-saving")
     @ResponseStatus(code = HttpStatus.CREATED)
     public void createISA(
         @RequestBody InstallmentSavingAccountRecord record
@@ -38,7 +36,7 @@ public class InstallmentSavingAccountController {
         } 
     }
 
-    @GetMapping
+    @GetMapping("/account/installment-saving")
     public List<InstallmentSavingAccount> getAllISA(
         @RequestParam(name = "uid") String uid
     ) {
@@ -52,7 +50,7 @@ public class InstallmentSavingAccountController {
     }
 
     @ResponseStatus(code = HttpStatus.OK)
-    @GetMapping("/tryDeposit")
+    @GetMapping("/account/installment-saving/tryDeposit")
     public void tryDeposit(
         @RequestParam Integer id
     ) {
@@ -81,7 +79,7 @@ public class InstallmentSavingAccountController {
         accountRepository.save(account);
     }
 
-    @PostMapping
+    @PostMapping("/account/installment-saving")
     public void editInstallmentSavingAccountInfo(
         @RequestParam String uid,
         @RequestParam Integer accountId,
@@ -106,7 +104,7 @@ public class InstallmentSavingAccountController {
         } else throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "일치하는 계좌가 존재하지 않습니다.");
     }
 
-    @DeleteMapping
+    @DeleteMapping("/account/installment-saving")
     public void deleteAccount(
         @RequestParam(name = "id") Integer id
     ) {

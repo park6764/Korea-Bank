@@ -6,25 +6,19 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.koreabank.account.Account;
 import com.example.koreabank.account.AccountRepository;
 
-@Controller
-@RequestMapping("/transaction-history")
+@RestController
 public class TransactionHistoryController {
     @Autowired
     private TransactionHistoryRepository thRepository;
     @Autowired
     private AccountRepository accountRepository;
 
-    @PutMapping
+    @PutMapping("/transaction-history")
     public ResponseEntity<String> createTransactionHistory(
         @RequestBody TransactionHistoryRecord record
     ) {
@@ -86,7 +80,7 @@ public class TransactionHistoryController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/transaction-history")
     public List<TransactionHistory> getAllTransactionHistory(
         @RequestParam String uid,
         @RequestParam Optional<Integer> accountId

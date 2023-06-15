@@ -5,22 +5,20 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/account")
+@RestController
 public class AccountController {
     @Autowired
     private AccountRepository accountRepository;
 
     @ResponseStatus(code = HttpStatus.CREATED)
-    @PutMapping("/") // 생성
+    @PutMapping("/account") // 생성
     public void createAccount(@RequestBody AccountRecord record) {
         accountRepository.save(record.toAccount());
     }
 
-    @GetMapping("/") 
+    @GetMapping("/account") 
     public List<Account> getAllAccounts(
         @RequestParam(name = "uid") String uid
     ) {
@@ -33,14 +31,14 @@ public class AccountController {
         return list;
     }
 
-    @DeleteMapping("/")
+    @DeleteMapping("/account")
     public void deleteAccount(
         @RequestParam(name = "accountId") Integer accountId
     ) {
         accountRepository.deleteById(accountId);
     }
 
-    @PostMapping("/")
+    @PostMapping("/account")
     public void editAccountPw(
         @RequestParam(name = "uid") String uid,
         @RequestParam(name = "accountId") Integer accountId,
